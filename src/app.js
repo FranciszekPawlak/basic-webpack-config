@@ -1,10 +1,17 @@
-import showMessage from './components/showMessage'
-import './css/style.css'
-import addImage from './components/image'
+import React from "react";
+import "./css/style.css";
+import AddImage from "./components/AddImage";
+import image from "./images/łolaboga.jpg";
+import Header from "./components/Header";
 
 const App = () => {
-    showMessage('Ru ru ru ru ru rurkowce!')
-    addImage('.header')
-}
+  const content = "Ru ru ru ru rurkowce!";
+  return (
+    <>
+      <Header content={content}></Header>
+      <AddImage url={image}></AddImage>
+    </>
+  );
+};
 
-window.addEventListener('DOMContentLoaded', App)
+export default App;

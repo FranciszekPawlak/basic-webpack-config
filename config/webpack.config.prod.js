@@ -4,14 +4,15 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const {
     CleanWebpackPlugin
 } = require('clean-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin')
 module.exports = {
     mode: 'production',
     entry: {
-        main: './src/app.js'
+        main: './src/index.js'
     },
     output: {
         filename: 'js/main-[contenthash].js',
-        path: path.resolve(__dirname, 'dist')
+        path: path.resolve(__dirname, "../", 'dist')
     },
     module: {
         rules: [{
@@ -44,21 +45,44 @@ module.exports = {
                     }
                 }],
             },
+            {
+                test: /\.(js|jsx)$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: [
+                            ["@babel/preset-env", {
+                                useBuiltIns: "usage",
+                                corejs: 3
+                            }],
+                            ['@babel/preset-react']
+                        ],
+                        plugins: [
+                            "@babel/plugin-proposal-class-properties",
+                            "@babel/plugin-transform-arrow-functions",
+                        ],
+                    },
+                },
+            },
         ],
     },
     plugins: [
         //html generator
         new HtmlWebpackPlugin({
-            filename: './index.html',
-            template: './src/templates/template.html'
+            template: 'src/templates/template.html',
+
         }),
         //style to one file
         new MiniCssExtractPlugin({
             filename: '[name]-[contenthash].css',
-
         }),
         //dir cleaner
         new CleanWebpackPlugin(),
+        new CopyPlugin([{
+            from: 'public',
+            to: 'images'
+        }, ]),
     ],
 
 }

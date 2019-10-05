@@ -3,14 +3,16 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {
     CleanWebpackPlugin
 } = require('clean-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin')
+
 module.exports = {
     mode: 'development',
     entry: {
-        main: './src/app.js'
+        main: './src/index.js'
     },
     output: {
         filename: 'js/main.js',
-        path: path.resolve(__dirname, 'dist')
+        path: path.resolve(__dirname, '../', 'dist')
     },
     //bundle on change
     watch: true,
@@ -42,16 +44,39 @@ module.exports = {
                     outputPath: 'images',
                 }
             },
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: [
+                            ["@babel/preset-env", {
+                                useBuiltIns: "usage",
+                                corejs: 3
+                            }],
+                            ['@babel/preset-react']
+                        ],
+                        plugins: [
+                            "@babel/plugin-proposal-class-properties",
+                            "@babel/plugin-transform-arrow-functions",
+                        ],
+                    },
+                },
+            },
         ],
     },
     plugins: [
         //html generator
         new HtmlWebpackPlugin({
-            filename: './index.html',
-            template: './src/templates/template.html'
+            template: 'src/templates/template.html',
         }),
         //dir cleaner
         new CleanWebpackPlugin(),
+        new CopyPlugin([{
+            from: 'public',
+            to: 'images'
+        }, ]),
     ],
 
 }
