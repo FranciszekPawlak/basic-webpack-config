@@ -13,31 +13,36 @@ module.exports = {
         filename: 'js/main-[contenthash].js',
         path: path.resolve(__dirname, 'dist')
     },
-    //do bundle on change
-    watch: true,
-    //server
-    devServer: {
-        //open browser 
-        open: true,
-        //static files
-        contentBase: path.resolve(__dirname, './public/assets'),
-    },
     module: {
-        rules: [
-            //txt
-            {
+        rules: [{
                 test: /\.txt$/,
                 use: 'raw-loader',
             },
-            //css
             {
                 test: /\.css$/,
                 use: [MiniCssExtractPlugin.loader, 'css-loader'],
             },
-            //sass
             {
                 test: /\.(sass|scss)$/,
                 use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+            },
+            {
+                test: /\.(jpg|png|svg|gif"jepg)$/,
+                use: [{
+                    loader: 'file-loader',
+                    options: {
+                        name: '[name]-[contenthash].[ext]',
+                        outputPath: 'images',
+                    }
+                }, {
+                    loader: 'image-webpack-loader',
+                    options: {
+                        mozjpeg: {
+                            quality: 80,
+                            progressiver: true,
+                        }
+                    }
+                }],
             },
         ],
     },
@@ -49,7 +54,7 @@ module.exports = {
         }),
         //style to one file
         new MiniCssExtractPlugin({
-            filename: 'styles/[name]-[contenthash].css',
+            filename: '[name]-[contenthash].css',
 
         }),
         //dir cleaner
